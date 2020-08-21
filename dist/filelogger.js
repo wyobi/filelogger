@@ -17,7 +17,6 @@
 
                 'use strict';
 
-
                 var queue = [];
                 var ongoing = false;
                 var levels = ['DEBUG', 'INFO', 'WARN', 'ERROR'];
@@ -36,7 +35,6 @@
                 function isBrowser() {
                     return (!$window.cordova && !$window.PhoneGap && !$window.phonegap) || isRipple();
                 }
-
 
                 function log(level) {
                     if (angular.isString(level)) {
@@ -81,49 +79,41 @@
                         }
                     }
 
-                    if (isBrowser()) {
-                        // log to browser console
+                    messages.unshift(timestamp);
 
-                        messages.unshift(timestamp);
-
-                        if (angular.isObject(console) && angular.isFunction(console.log)) {
-                            switch (level) {
-                                case 'DEBUG':
-                                    if (angular.isFunction(console.debug)) {
-                                        console.debug.apply(console, messages);
-                                    } else {
-                                        console.log.apply(console, messages);
-                                    }
-                                    break;
-                                case 'INFO':
-                                    if (angular.isFunction(console.debug)) {
-                                        console.info.apply(console, messages);
-                                    } else {
-                                        console.log.apply(console, messages);
-                                    }
-                                    break;
-                                case 'WARN':
-                                    if (angular.isFunction(console.debug)) {
-                                        console.warn.apply(console, messages);
-                                    } else {
-                                        console.log.apply(console, messages);
-                                    }
-                                    break;
-                                case 'ERROR':
-                                    if (angular.isFunction(console.debug)) {
-                                        console.error.apply(console, messages);
-                                    } else {
-                                        console.log.apply(console, messages);
-                                    }
-                                    break;
-                                default:
+                    if (angular.isObject(console) && angular.isFunction(console.log)) {
+                        switch (level) {
+                            case 'DEBUG':
+                                if (angular.isFunction(console.debug)) {
+                                    console.debug.apply(console, messages);
+                                } else {
                                     console.log.apply(console, messages);
-                            }
+                                }
+                                break;
+                            case 'INFO':
+                                if (angular.isFunction(console.debug)) {
+                                    console.info.apply(console, messages);
+                                } else {
+                                    console.log.apply(console, messages);
+                                }
+                                break;
+                            case 'WARN':
+                                if (angular.isFunction(console.debug)) {
+                                    console.warn.apply(console, messages);
+                                } else {
+                                    console.log.apply(console, messages);
+                                }
+                                break;
+                            case 'ERROR':
+                                if (angular.isFunction(console.debug)) {
+                                    console.error.apply(console, messages);
+                                } else {
+                                    console.log.apply(console, messages);
+                                }
+                                break;
+                            default:
+                                console.log.apply(console, messages);
                         }
-
-                    } else {
-                        // log to logcat
-                        console.log(message.join(' '));
                     }
 
                     queue.push({
@@ -134,7 +124,6 @@
                         process();
                     }
                 }
-
 
                 function process() {
 
@@ -161,7 +150,6 @@
 
                 }
 
-
                 function writeLog(message) {
                     var q = $q.defer();
 
@@ -177,15 +165,15 @@
 
                     } else {
 
-                        if (!$window.cordova || !$window.cordova.file || !$window.cordova.file.dataDirectory) {
-                            q.reject('cordova.file.dataDirectory is not available');
+                        if (!$window.cordova || !$window.cordova.file || !$window.cordova.file.externalDataDirectory) {
+                            q.reject('cordova.file.externalDataDirectory is not available');
                             return q.promise;
                         }
 
-                        $cordovaFile.checkFile(cordova.file.dataDirectory, storageFilename).then(
+                        $cordovaFile.checkFile(cordova.file.externalDataDirectory, storageFilename).then(
                             function () {
                                 // writeExistingFile(path, fileName, text)
-                                $cordovaFile.writeExistingFile(cordova.file.dataDirectory, storageFilename, message).then(
+                                $cordovaFile.writeExistingFile(cordova.file.externalDataDirectory, storageFilename, message).then(
                                     function () {
                                         q.resolve();
                                     },
@@ -196,7 +184,7 @@
                             },
                             function () {
                                 // writeFile(path, fileName, text, replaceBool)
-                                $cordovaFile.writeFile(cordova.file.dataDirectory, storageFilename, message, true).then(
+                                $cordovaFile.writeFile(cordova.file.externalDataDirectory, storageFilename, message, true).then(
                                     function () {
                                         q.resolve();
                                     },
@@ -212,7 +200,6 @@
                     return q.promise;
                 }
 
-
                 function getLogfile() {
                     var q = $q.defer();
 
@@ -220,12 +207,12 @@
                         q.resolve($window.localStorage[storageFilename]);
                     } else {
 
-                        if (!$window.cordova || !$window.cordova.file || !$window.cordova.file.dataDirectory) {
-                            q.reject('cordova.file.dataDirectory is not available');
+                        if (!$window.cordova || !$window.cordova.file || !$window.cordova.file.externalDataDirectory) {
+                            q.reject('cordova.file.externalDataDirectory is not available');
                             return q.promise;
                         }
 
-                        $cordovaFile.readAsText(cordova.file.dataDirectory, storageFilename).then(
+                        $cordovaFile.readAsText(cordova.file.externalDataDirectory, storageFilename).then(
                             function (result) {
                                 q.resolve(result);
                             },
@@ -237,7 +224,6 @@
 
                     return q.promise;
                 }
-
 
                 function deleteLogfile() {
                     var q = $q.defer();
@@ -247,12 +233,12 @@
                         q.resolve();
                     } else {
 
-                        if (!$window.cordova || !$window.cordova.file || !$window.cordova.file.dataDirectory) {
-                            q.reject('cordova.file.dataDirectory is not available');
+                        if (!$window.cordova || !$window.cordova.file || !$window.cordova.file.externalDataDirectory) {
+                            q.reject('cordova.file.externalDataDirectory is not available');
                             return q.promise;
                         }
 
-                        $cordovaFile.removeFile(cordova.file.dataDirectory, storageFilename).then(
+                        $cordovaFile.removeFile(cordova.file.externalDataDirectory, storageFilename).then(
                             function (result) {
                                 q.resolve(result);
                             },
@@ -265,7 +251,6 @@
                     return q.promise;
                 }
 
-
                 function setStorageFilename(filename) {
                     if (angular.isString(filename) && filename.length > 0) {
                         storageFilename = filename;
@@ -274,7 +259,6 @@
                         return false;
                     }
                 }
-
 
                 function setTimestampFormat(format, timezone) {
                     if (!(angular.isUndefined(format) || angular.isString(format))) {
@@ -287,7 +271,6 @@
                     dateFormat = format;
                     dateTimezone = timezone;
                 }
-
 
                 function checkFile() {
                     var q = $q.defer();
@@ -303,12 +286,12 @@
 
                     } else {
 
-                        if (!$window.cordova || !$window.cordova.file || !$window.cordova.file.dataDirectory) {
-                            q.reject('cordova.file.dataDirectory is not available');
+                        if (!$window.cordova || !$window.cordova.file || !$window.cordova.file.externalDataDirectory) {
+                            q.reject('cordova.file.externalDataDirectory is not available');
                             return q.promise;
                         }
 
-                        $cordovaFile.checkFile(cordova.file.dataDirectory, storageFilename).then(function (fileEntry) {
+                        $cordovaFile.checkFile(cordova.file.externalDataDirectory, storageFilename).then(function (fileEntry) {
                             fileEntry.file(q.resolve, q.reject);
                         }, q.reject);
 
@@ -323,13 +306,11 @@
                     log.apply(undefined, args);
                 }
 
-
                 function info() {
                     var args = Array.prototype.slice.call(arguments, 0);
                     args.unshift('INFO');
                     log.apply(undefined, args);
                 }
-
 
                 function warn() {
                     var args = Array.prototype.slice.call(arguments, 0);
@@ -337,13 +318,11 @@
                     log.apply(undefined, args);
                 }
 
-
                 function error() {
                     var args = Array.prototype.slice.call(arguments, 0);
                     args.unshift('ERROR');
                     log.apply(undefined, args);
                 }
-
 
                 return {
                     log: log,
