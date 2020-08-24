@@ -27,7 +27,19 @@ angular.module('fileLogger', ['ngCordova.plugins.file'])
             var levels = ['DEBUG', 'INFO', 'WARN', 'ERROR'];
 
             var storageFilename = 'messages.log';
-            var storageFolder = cordova.file.externalDataDirectory;
+            var storageFolder = null;
+            var getStorageFolder = function() {
+                if(storageFilename) {
+                    return storageFilename;
+                }
+                else if (cordova.file) {
+                    return cordova.file.externalDataDirectory;
+                }
+                else {
+                    return null;
+                }
+            };  
+
 
             var dateFormat;
             var dateTimezone;
@@ -171,15 +183,15 @@ angular.module('fileLogger', ['ngCordova.plugins.file'])
 
                 } else {
 
-                if (!$window.cordova || !$window.cordova.file || !storageFolder) {
-                    q.reject('storageFolder "' + storageFolder + '" is not available');
+                if (!$window.cordova || !$window.cordova.file || !getStorageFolder()) {
+                    q.reject('storageFolder "' + getStorageFolder() + '" is not available');
                     return q.promise;
                 }
 
-                $cordovaFile.checkFile(storageFolder, storageFilename).then(
+                $cordovaFile.checkFile(getStorageFolder(), storageFilename).then(
                     function () {
                     // writeExistingFile(path, fileName, text)
-                    $cordovaFile.writeExistingFile(storageFolder, storageFilename, message).then(
+                    $cordovaFile.writeExistingFile(getStorageFolder(), storageFilename, message).then(
                         function () {
                             q.resolve();
                         },
@@ -190,7 +202,7 @@ angular.module('fileLogger', ['ngCordova.plugins.file'])
                     },
                     function () {
                     // writeFile(path, fileName, text, replaceBool)
-                    $cordovaFile.writeFile(storageFolder, storageFilename, message, true).then(
+                    $cordovaFile.writeFile(getStorageFolder(), storageFilename, message, true).then(
                         function () {
                             q.resolve();
                         },
@@ -213,12 +225,12 @@ angular.module('fileLogger', ['ngCordova.plugins.file'])
                     q.resolve($window.localStorage[storageFilename]);
                 } else {
 
-                if (!$window.cordova || !$window.cordova.file || !storageFolder) {
-                    q.reject('storageFolder "' + storageFolder + '" is not available');
+                if (!$window.cordova || !$window.cordova.file || !getStorageFolder()) {
+                    q.reject('storageFolder "' + getStorageFolder() + '" is not available');
                     return q.promise;
                 }
 
-                $cordovaFile.readAsText(storageFolder, storageFilename).then(
+                $cordovaFile.readAsText(getStorageFolder(), storageFilename).then(
                     function (result) {
                         q.resolve(result);
                     },
@@ -239,12 +251,12 @@ angular.module('fileLogger', ['ngCordova.plugins.file'])
                     q.resolve();
                 } else {
 
-                if (!$window.cordova || !$window.cordova.file || !storageFolder) {
-                    q.reject('storageFolder "' + storageFolder + '" is not available');
+                if (!$window.cordova || !$window.cordova.file || !getStorageFolder()) {
+                    q.reject('storageFolder "' + getStorageFolder() + '" is not available');
                     return q.promise;
                 }
 
-                $cordovaFile.removeFile(storageFolder, storageFilename).then(
+                $cordovaFile.removeFile(getStorageFolder(), storageFilename).then(
                     function (result) {
                         q.resolve(result);
                     },
@@ -302,12 +314,12 @@ angular.module('fileLogger', ['ngCordova.plugins.file'])
                 } 
                 else {
 
-                if (!$window.cordova || !$window.cordova.file || !storageFolder) {
-                    q.reject('storageFolder "' + storageFolder + '" is not available');
+                if (!$window.cordova || !$window.cordova.file || !getStorageFolder()) {
+                    q.reject('storageFolder "' + getStorageFolder() + '" is not available');
                     return q.promise;
                 }
 
-                $cordovaFile.checkFile(storageFolder, storageFilename).then(function (fileEntry) {
+                $cordovaFile.checkFile(getStorageFolder(), storageFilename).then(function (fileEntry) {
                     fileEntry.file(q.resolve, q.reject);
                 }, q.reject);
 
