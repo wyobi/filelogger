@@ -165,8 +165,8 @@ angular.module('fileLogger', ['ngCordova.plugins.file'])
 
                 } else {
 
-                if (!$window.cordova || !$window.cordova.file || !$window.storageFolder) {
-                    q.reject('storageFolder is not available');
+                if (!$window.cordova || !$window.cordova.file || !storageFolder) {
+                    q.reject('storageFolder "' + storageFolder + '" is not available');
                     return q.promise;
                 }
 
@@ -207,8 +207,8 @@ angular.module('fileLogger', ['ngCordova.plugins.file'])
                     q.resolve($window.localStorage[storageFilename]);
                 } else {
 
-                if (!$window.cordova || !$window.cordova.file || !$window.storageFolder) {
-                    q.reject('storageFolder is not available');
+                if (!$window.cordova || !$window.cordova.file || !storageFolder) {
+                    q.reject('storageFolder "' + storageFolder + '" is not available');
                     return q.promise;
                 }
 
@@ -233,8 +233,8 @@ angular.module('fileLogger', ['ngCordova.plugins.file'])
                     q.resolve();
                 } else {
 
-                if (!$window.cordova || !$window.cordova.file || !$window.storageFolder) {
-                    q.reject('storageFolder is not available');
+                if (!$window.cordova || !$window.cordova.file || !storageFolder) {
+                    q.reject('storageFolder "' + storageFolder + '" is not available');
                     return q.promise;
                 }
 
@@ -296,8 +296,8 @@ angular.module('fileLogger', ['ngCordova.plugins.file'])
                 } 
                 else {
 
-                if (!$window.cordova || !$window.cordova.file || !$window.storageFolder) {
-                    q.reject('storageFolder is not available');
+                if (!$window.cordova || !$window.cordova.file || !storageFolder) {
+                    q.reject('storageFolder "' + storageFolder + '" is not available');
                     return q.promise;
                 }
 
